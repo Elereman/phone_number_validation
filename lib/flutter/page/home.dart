@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
             height: 40,
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20, bottom: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -131,9 +131,14 @@ class _HomePageState extends State<HomePage> {
                       );
                     } else {
                       if (state.isValid) {
-                        return const Icon(
-                          CupertinoIcons.arrow_right_circle_fill,
-                          size: 60,
+                        return GestureDetector(
+                          onTap: () {
+                            _showSuccessDialog(context);
+                          },
+                          child: const Icon(
+                            CupertinoIcons.arrow_right_circle_fill,
+                            size: 60,
+                          ),
                         );
                       } else {
                         return const Icon(
@@ -148,6 +153,23 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showCupertinoDialog<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Number is valid'),
+        actions: <Widget>[
+          CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: const Text('Ok')),
         ],
       ),
     );
