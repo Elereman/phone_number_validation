@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:phone_number_validation/back_bone/di.dart' as di;
+import 'package:phone_number_validation/flutter/bloc/home_page/bloc.dart';
 import 'package:phone_number_validation/flutter/page/home.dart';
 
 void main() {
+  di.init();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.white,
+      home: HomePage(
+        bloc: di.sl.get<HomePageBloc>(),
       ),
-      home: HomePage(),
     );
   }
 }
