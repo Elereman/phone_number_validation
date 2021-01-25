@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   rxdart: 0.25.0
+  mask_text_input_formatter: 1.2.1
 
   cupertino_icons: ^1.0.0
 

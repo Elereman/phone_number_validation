@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:phone_number_validation/domain/usecase/validate_phone_number.dart';
+import 'package:phone_number_validation/flutter/bloc/home_page/bloc.dart';
 import 'package:phone_number_validation/flutter/page/home.dart';
 
 void main() {
@@ -6,17 +8,16 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.white,
+      home: HomePage(
+        bloc: HomePageBloc(
+          validatePhoneNumberUseCase: DefaultValidatePhoneNumberUseCase(),
+        ),
       ),
-      home: HomePage(),
     );
   }
 }
