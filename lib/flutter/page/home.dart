@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:phone_number_validation/back_bone/bloc_status.dart';
-import 'package:phone_number_validation/flutter/bloc/home_page/bloc.dart';
-import 'package:phone_number_validation/flutter/bloc/home_page/state.dart';
+import 'package:phone_number_validation/flutter/bloc/phone_validation/bloc.dart';
 
 class HomePage extends StatefulWidget {
-  final HomePageBloc bloc;
+  final PhoneValidationBloc bloc;
 
   const HomePage({@required this.bloc, Key key}) : super(key: key);
 
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onTextChanged() {
-    widget.bloc.validatePhoneNumber(_controller.text);
+    widget.bloc.add(PhoneValidationEvent.validatePhone(_controller.text));
   }
 
   @override
@@ -111,55 +111,40 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                StreamBuilder<HomePageState>(
-                    stream: widget.bloc.stateStream,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<HomePageState> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CupertinoActivityIndicator(
-                            animating: true,
-                            radius: 20,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
+                BlocProvider<PhoneValidationBloc>.value(
+                  value: widget.bloc,
+                  child: BlocBuilder<PhoneValidationBloc, PhoneValidationState>(
+                      builder:
+                          (BuildContext context, PhoneValidationState state) {
+                    if (state.status == BlocStatus.Loading) {
+                      return const Center(
+                        child: CupertinoActivityIndicator(
+                          animating: true,
+                          radius: 20,
+                        ),
+                      );
+                    } else if (state.status == BlocStatus.Error) {
+                      return const Icon(
+                        CupertinoIcons.arrow_right_circle_fill,
+                        size: 60,
+                        color: CupertinoColors.systemRed,
+                      );
+                    } else {
+                      if (state.isValid) {
                         return const Icon(
                           CupertinoIcons.arrow_right_circle_fill,
                           size: 60,
-                          color: CupertinoColors.systemRed,
                         );
                       } else {
-                        final HomePageState state = snapshot.data;
-
-                        if (state.status == BlocStatus.Loading) {
-                          return const Center(
-                            child: CupertinoActivityIndicator(
-                              animating: true,
-                              radius: 20,
-                            ),
-                          );
-                        } else if (state.status == BlocStatus.Error) {
-                          return const Icon(
-                            CupertinoIcons.arrow_right_circle_fill,
-                            size: 60,
-                            color: CupertinoColors.systemRed,
-                          );
-                        } else {
-                          if (state.isNumberValid) {
-                            return const Icon(
-                              CupertinoIcons.arrow_right_circle_fill,
-                              size: 60,
-                            );
-                          } else {
-                            return const Icon(
-                              CupertinoIcons.arrow_right_circle_fill,
-                              size: 60,
-                              color: CupertinoColors.inactiveGray,
-                            );
-                          }
-                        }
+                        return const Icon(
+                          CupertinoIcons.arrow_right_circle_fill,
+                          size: 60,
+                          color: CupertinoColors.inactiveGray,
+                        );
                       }
-                    }),
+                    }
+                  }),
+                ),
               ],
             ),
           )
